@@ -1,7 +1,9 @@
-#Original file taken from UCSF
+#Original file taken from UCSF written by Lin Shao <shaol@janelia.hhmi.org>
 #Edit by Ian Dobbie ian.dobbie@bioch.ox.ac.uk to remove Priithon dependence
 #so it works on the Oxford python installs.
 #v1.0 20150609 IMD
+
+
 
 import sys
 
