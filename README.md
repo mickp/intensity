@@ -30,8 +30,8 @@ typical centre of a real biological sample.
 Convention is moving the grating away from microscope is +ve.
 
 
-Example of the Intensity app output from OMX v2 software showing
-alignment of the red, green and blue curves.
+Intensity-graph.PNG is an example of the Intensity app output from OMX
+v2 software showing alignment of the red, green and blue curves.
 
 1. Focus the spots roughly by eye in the BFP using the viewing tool. This
 can be checked more accurately by lookingnat the spot size on the
