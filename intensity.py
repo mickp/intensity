@@ -66,37 +66,51 @@ def main():
 
     
     nz, ny, nx = indat.shape
-    peakpos = N.argmax(indat)
-    slicesize = nx*ny
+    centredat = indat[:,3*ny/8:5*ny/8,3*nx/8:5*nx/8]
+    peakpos = N.argmax(centredat)
+    slicesize = (nx/4)*(ny/4)
     slicepos = peakpos % slicesize
-    xpos = slicepos % nx
-    ypos = (slicepos - xpos)/ nx
-    print "x,y peak=", xpos,ypos
+    xoffset = slicepos % (nx/4)
+    xpos = xoffset +(3*nx/8)
+    ypos = ((slicepos - xoffset)/ (nx/4))+(3*ny/8)
 
     peakx = xpos
     peaky = ypos
 
-#    st = raw_input("peaks coordinates = ")
-#    try:
-#        peakx, peaky = map(int, st.split(','))
-#    except ValueError:
-#        print "peaks coordinates \"%s\" is invalid" % st
-#        sys.exit(1)
+    st = raw_input("peaks coordinates [%s,%s]= " % (peakx,peaky))
+    if (st != "" ):
+        try:
+            peakx, peaky = map(int, st.split(','))
+        except ValueError:
+            print "peaks coordinates \"%s\" is invalid" % st
+            sys.exit(1)
 
-    st = raw_input("background to subtract = ")
-    try:
-        background = float(st)
-    except ValueError:
-        print "background value \"%s\" is invalid" % st
-        sys.exit(1)
-        
-    st = raw_input("number of phases = ")
-    try:
-        nphases = int(st)
-    except ValueError:
-        print "number of phases \"%s\" is invalid" % st
-        sys.exit(1)
+    #estimate background from the mean in the 4 corners,
+    #1/10th of image in each corner
     
+    bkg = [N.mean(indat[:,:nx/10,:ny/10]),
+           N.mean(indat[:,:-nx/10,:ny/10]),
+           N.mean(indat[:,:-nx/10,:-ny/10]),
+           N.mean(indat[:,:nx/10,:-ny/10])]
+    background= N.min(bkg)
+                    
+    st = raw_input("background to subtract [%s] = " % background )
+    if (st != "" ):
+        try:
+            background = float(st)
+        except ValueError:
+            print "background value \"%s\" is invalid" % st
+            sys.exit(1)
+            
+    nphases = 5
+    st = raw_input("number of phases [%s]= " % nphases)
+    if (st != "" ):
+        try:
+            nphases = int(st)
+        except ValueError:
+            print "number of phases \"%s\" is invalid" % st
+            sys.exit(1)
+            
     
     p, m, ph, separr=doit(indat, peakx, peaky, background, nphases)
     plt.plot(p[1:],'-', hold=1)
