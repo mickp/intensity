@@ -113,9 +113,9 @@ def main():
             
     
     p, m, ph, separr=doit(indat, peakx, peaky, background, nphases)
-    plt.plot(p[1:],'-', hold=1)
-    plt.plot(m[1,1:],'-', hold=1)
-    plt.plot(m[2,1:],'-', hold=1)
+    plt.plot(p[1:],'r-', hold=1)
+    plt.plot(m[1,1:],'g-', hold=1)
+    plt.plot(m[2,1:],'b-', hold=1)
     plt.show()
 
 if  __name__ == '__main__':
