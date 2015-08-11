@@ -69,7 +69,12 @@ class IntensityProfiler(object):
     def setDataSource(self, filename):
         """Set data source, clearing invalidated variables."""
         self._data = Mrc.bindFile(filename)
-        #self._source = Mrc.open(filename)
+        # Mrc.py version conflict.
+        # With cockpit data, Mrc.open from cockpit/util/Mrc.py works just fine,
+        # but local Mrc.py fails. There are no version numbers, so I have no idea
+        # which is 'current'.
+        # I included self._source for access to headers, but since they're never
+        # used here, I'll just comment this out for now. MAP 20150811
         self._projection = None
         self._beadCentre = None
         self._results = None
