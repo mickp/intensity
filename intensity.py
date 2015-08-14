@@ -32,7 +32,7 @@ class IntensityProfiler(object):
     def calculateInstensity(self):
         """Do the calculation."""
         if self._data is None:
-            return
+            return False
         if self._beadCentre is None:
             self.guessBeadCentre()
         nPhases = self._phases
@@ -211,7 +211,8 @@ class IntensityProfilerFrame(wx.Frame):
         if not self.profiler.hasData():
             self.sb.SetStatusText('No data loaded.')
         # Do the calculation
-        self.profiler.calculateInstensity()
+        if self.profiler.calculateInstensity() is False:
+            return
         ## Generate line graphs        
         # Raw intensity.
         peakY = self.profiler.results['peak'][1:]
