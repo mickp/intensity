@@ -227,7 +227,7 @@ class IntensityProfilerFrame(wx.Frame):
         second = plot.PolyLine(zip(secondX, secondY), colour='blue')
         # Add line graphs to a graphics context.
         gc = plot.PlotGraphics([peak, first, second], 
-                               'Intensity profiles', 'pixels', 'arb. units')
+                               'Intensity profiles', 'z', 'arb. units')
         # Clear any old graphs.
         self.plotCanvas.Clear()
         # Draw the graphics context.
