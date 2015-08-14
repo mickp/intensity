@@ -59,12 +59,22 @@ class IntensityProfiler(object):
         for order in range (1,3):
             mag[order] = np.sqrt(sepArr[2*order-1]**2 + sepArr[2*order]**2)
             phi[order] = np.arctan2(sepArr[2*order], sepArr[2*order-1])
+        # Average a few points around the peak
+        beadAverage = np.average(np.average(
+                          self._data[:, peaky-2:peaky+2, peakx-2:peakx+2],
+                          axis=2), axis=1)
+        avgPeak = np.reshape(beadAverage, (-1, nPhases))
+        avgPeak = np.average(avgPeak, 1)
+        avgPeak -= avgPeak.min()
+        avgPeak *= mag[1].max() / avgPeak.max()
+
         peak = np.reshape(self._data[:,peaky,peakx], (-1, nPhases))
         peak = np.average(peak, 1)
         peak -= peak.min()
         peak *= mag[1].max() / peak.max()
         
         self.results = dict(peak=peak,
+                            avg=avgPeak,
                             mag=mag,
                             phi=phi,
                             sep=sepArr)
@@ -218,11 +228,18 @@ class IntensityProfilerFrame(wx.Frame):
         # Do the calculation
         if self.profiler.calculateInstensity() is False:
             return
-        ## Generate line graphs        
-        # Raw intensity.
+        ## Generate line graphs
+        # Raw intensity at one point in XY.
         peakY = self.profiler.results['peak'][1:]
         peakX = np.arange(len(peakY))      
         peak = plot.PolyLine(zip(peakX, peakY), colour='red')
+        # Average intensity over a few XY points around the peak.
+        # The raw intensity plot can vary greatly when the z-profile is taken
+        # just one pixel away; this average plot can help show if a dip in the
+        # raw data is a feature of the bead, or due to noise.
+        avgY = self.profiler.results['avg'][1:]
+        avgX = np.arange(len(avgY))
+        avg = plot.PolyLine(zip(avgX, avgY), colour='red', style=wx.DOT)
         # First order.
         firstY = self.profiler.results['mag'][1,1:]
         firstX = np.arange(len(firstY))
@@ -232,7 +249,7 @@ class IntensityProfilerFrame(wx.Frame):
         secondX = np.arange(len(secondY))
         second = plot.PolyLine(zip(secondX, secondY), colour='blue')
         # Add line graphs to a graphics context.
-        gc = plot.PlotGraphics([peak, first, second], 
+        gc = plot.PlotGraphics([peak, avg, first, second],
                                'Intensity profiles', 'z', 'arb. units')
         # Clear any old graphs.
         self.plotCanvas.Clear()
