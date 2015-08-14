@@ -2,7 +2,7 @@
 # -*- coding: UTF8   -*-
 """SIM intensity profiling tool.
 
-This can be used on its own from the command line, 
+This can be used on its own from the command line,
 or can be included as part of another wx app.
 """
 
@@ -50,13 +50,12 @@ class IntensityProfiler(object):
         mag = np.zeros((nPhases/2 + 1, nz/nPhases)).astype(np.float32)
         phi = np.zeros((nPhases/2 + 1, nz/nPhases)).astype(np.float32)
         mag[0] = sepArr[0]
-        
+
         for order in range (1,3):
             mag[order] = np.sqrt(sepArr[2*order-1]**2 + sepArr[2*order]**2)
             phi[order] = np.arctan2(sepArr[2*order], sepArr[2*order-1])
         peak = np.reshape(self._data[:,peaky,peakx], (-1, nPhases))
         peak = np.average(peak, 1)
-
         peak -= peak.min()
         peak *= mag[1].max() / peak.max()
         
@@ -143,10 +142,10 @@ class IntensityProfilerFrame(wx.Frame):
     def __init__(self, parent=None):
         super(IntensityProfilerFrame, self).__init__(parent, title="SIM intensity profile")
         self.profiler = IntensityProfiler()
-        
+
         # Outermost sizer.
         vbox = wx.BoxSizer(wx.VERTICAL)
-        
+
         ## Toolbar
         toolbar = wx.ToolBar(self, -1)
         # Open file
@@ -156,20 +155,20 @@ class IntensityProfilerFrame(wx.Frame):
                         "Open", "Open a dataset")
         toolbar.AddSeparator()
         # Number of phases
-        label = wx.StaticText(toolbar, 
-                              wx.ID_ANY, 
+        label = wx.StaticText(toolbar,
+                              wx.ID_ANY,
                               label='# phases: ',
                               style=wx.TRANSPARENT_WINDOW)
         label.Bind(wx.EVT_ERASE_BACKGROUND, lambda event: None)
         toolbar.AddControl(label)
-        phasesTool = wx.SpinCtrl(toolbar, 
+        phasesTool = wx.SpinCtrl(toolbar,
                                  wx.ID_ANY,
                                  value='5',
                                  size=(48, -1),
                                  min=1,
                                  max=5,
                                  initial=5)
-        phasesTool.Bind(wx.EVT_SPIN, 
+        phasesTool.Bind(wx.EVT_SPIN,
                         lambda event: self.profiler.setPhases(event.GetPosition()))
         toolbar.AddControl(control=phasesTool)
         # Calculate profile.
@@ -180,8 +179,8 @@ class IntensityProfilerFrame(wx.Frame):
         toolbar.Realize()
         self.Bind(wx.EVT_TOOL, self.loadFile, openTool)
         self.Bind(wx.EVT_TOOL, self.calculate, goTool)
-        vbox.Add(toolbar, 0, border=5)        
-        
+        vbox.Add(toolbar, 0, border=5)
+
         ## Canvases
         hbox = wx.BoxSizer(wx.HORIZONTAL)
         # Image canvas
@@ -248,7 +247,7 @@ class IntensityProfilerFrame(wx.Frame):
         # Set the profiler data source .
         self.profiler.setDataSource(filename)
 
-        # Guess a bead position      
+        # Guess a bead position
         xpos, ypos = self.profiler.guessBeadCentre()
         # Move indicator circle to the bead position.
         self.circle.SetPoint(self.canvas.PixelToWorld((xpos, ypos)))
