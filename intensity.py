@@ -26,7 +26,7 @@ class IntensityProfiler(object):
         self._projection = None
         self._beadCntre = None
         self._phases = 5
-        self._results = None
+        self.results = None
 
 
     def calculateInstensity(self):
